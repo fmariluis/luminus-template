@@ -8,6 +8,8 @@
             [leiningen.new.common :refer :all]
             [leiningen.new.lein :refer [lein-features]]
             [leiningen.new.boot :refer [boot-features]]
+            [leiningen.new.compojure :refer [compojure-features]]
+            [leiningen.new.reitit :refer [reitit-features]]
             [leiningen.new.auth :refer [auth-features]]
             [leiningen.new.auth-base :refer [auth-base-features]]
             [leiningen.new.auth-jwe :refer [auth-jwe-features]]
@@ -124,7 +126,6 @@
    ['org.webjars.bower/tether "1.4.3"]
    ['org.webjars/jquery "3.2.1"]
    ['org.clojure/tools.logging "0.4.0"]
-   ['compojure "1.6.0"]
    ['ring/ring-core "1.6.3"]
    ['ring-webjars "0.2.0"]
    ['ring/ring-defaults "0.3.1"]
@@ -151,6 +152,8 @@
         (-> [core-assets options]
             lein-features
             boot-features
+            compojure-features
+            reitit-features
             service-features
             auth-base-features
             auth-features
@@ -191,6 +194,7 @@
   (-> options
       (set-feature "+immutant" #{"+jetty" "+aleph" "+http-kit"})
       (set-feature "+logback" #{})
+      (set-feature "+compojure" #{"+reitit"})
       (set-feature "+lein" #{"+boot"})))
 
 (defn set-feature-dependency [options feature dependencies]
@@ -223,7 +227,9 @@
   "Create a new Luminus project"
   [name & feature-params]
   (let [min-version        "2.5.2"
-        supported-features #{;;databases
+        supported-features #{;; routing
+                             "+compojure" "+reitit"
+                             ;;databases
                              "+sqlite" "+h2" "+postgres" "+mysql" "+mongodb" "+datomic"
                              ;;servers
                              "+aleph" "+jetty" "+http-kit"
